@@ -1,6 +1,6 @@
 const axios = require('axios');
 
-const _token = '';
+const _token = 'c9c99aaac6933c7a5c3ecfdb62847866f46ac094';
 const _url = 'https://api.codenation.dev/v1/challenge/dev-ps/';
 
 module.exports = {
@@ -8,7 +8,7 @@ module.exports = {
    * 
    * @param {*} callback 
    */
-  async getFrase(callback) {
+  async getSentence(callback) {
     const requestOptions = {
       params: { token: _token }
     };
@@ -25,7 +25,7 @@ module.exports = {
    * @param {*} data
    * @param {*} callback
    */
-  async postFrase(data, callback) {
+  async postSentence(data, callback) {
     const requestOptions = {
       params: { token: _token },
       headers: data.getHeaders()

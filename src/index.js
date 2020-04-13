@@ -2,9 +2,9 @@ const local = require('./local');
 const crypto = require('./crypto');
 const requests = require('./requests');
 
-// 1a Etapa - Fazer requisição ao endpoint da CODENATION para pegar a frase.
-requests.getFrase(getFrase_cb);
-console.log('Aguardando consulta...');
+// Step ONE - Make a request to the Codenation endpoint to get a sentence..
+requests.getSentence(getSentence_cb);
+console.log('Waiting Query..');
 return;
 
 
@@ -12,20 +12,20 @@ return;
  * 
  * @param {*} response 
  */
-function getFrase_cb(response) {
-  console.log('Resposta da Consulta : ', response);
+function getSentence_cb(response) {
+  console.log('Response of the Query : ', response);
 
-  // 2a Etapa - Descodificar frase recebida.
-  response.decifrado = crypto.decodeFrase(response.cifrado, response.numero_casas);
-  console.log('Frase Decifrada: ', response.decifrado);
+  // Step Two - Decode received sentence.
+  response.decifrado = crypto.decodeSentence(response.cifrado, response.numero_casas);
+  console.log('Sentence Decoded: ', response.decifrado);
 
-  // 3a Etapa - Codificar o Resumo (SHA1).
+  // Step Three - Encode the Summary to SHA1 Hash.
   response.resumo_criptografico = crypto.getSha1(response.decifrado);
-  console.log('Frase Decifrada (sha1): ', response.resumo_criptografico);
+  console.log('Sentence Decoded (sha1): ', response.resumo_criptografico);
 
-  // 4a Etapa - Atualizar o arquivo em disco com os campos novos.
+  // Step Four - Update attributes on the disk file.
   local.saveFile(JSON.stringify(response), saveFile_cb);
-  console.log('Arquivo sendo atualizado...');
+  console.log('Updating File...');
 
   return;
 }
@@ -34,14 +34,14 @@ function getFrase_cb(response) {
  * 
  */
 function saveFile_cb() {
-  console.log('Arquivo atualizado com êxito!');
+  console.log('File Updated with Sucess!');
 
-  // 5a Etapa - Submeter json do challenger.  
+  // Step Five - Submit json of the challenge.  
   const data = local.getData();
-  console.log('Arquivo carregado:', data._boundary);
+  console.log('File Loaded:', data._boundary);
 
-  requests.postFrase(data, postFrase_cb);
-  console.log('Desafio submetido!')
+  requests.postSentence(data, postSentence_cb);
+  console.log('Challenge Submited!')
 
   return;
 }
@@ -50,8 +50,8 @@ function saveFile_cb() {
  * 
  * @param {*} response 
  */
-function postFrase_cb(response) {
-  console.log('Resultado da Submissão: ', response)
+function postSentence_cb(response) {
+  console.log('Result of the Submit: ', response)
   
   return;
 }
