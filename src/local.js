@@ -2,11 +2,12 @@ const fs = require('fs');
 const fd = require('form-data');
 const path = require('path');
 
-const _fileData = '/data/';
+const _fileFolder = '/data/';
 const _fileName = 'answer';
 const _fileType = '.json';
 const _fileEncoding = 'utf8';
-const _fileFullName = path.join(__dirname + _fileData, _fileName + _fileType);
+const _fileFullName = path.join(__dirname + _fileFolder, _fileName + _fileType);
+
 
 module.exports = {
   /**
@@ -14,9 +15,9 @@ module.exports = {
    * @param {*} body 
    * @param {*} callback 
    */
-  saveFile(body, callback) {
+  writeFile(body, callback) {
     try {
-      fs.writeFile(_fileFullName, body, _fileEncoding, callback);
+      fs.writeFile(_fileFullName, JSON.stringify(body), _fileEncoding, callback);
     } catch (error) {
       console.error(error);
     }
@@ -27,13 +28,13 @@ module.exports = {
    * 
    */
   getData() {
-    const output = new fd();
+    const data = new fd();
     try {
       const stream = fs.createReadStream(_fileFullName)
-      output.append(_fileName, stream, _fileName + _fileType);
+      data.append(_fileName, stream, _fileName + _fileType);
     } catch (error) {
       console.error(error.message);
     }
-    return output;
+    return data;
   }
 };

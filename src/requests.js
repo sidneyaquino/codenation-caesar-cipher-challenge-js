@@ -1,18 +1,20 @@
 const axios = require('axios');
 
-const _token = 'c9c99aaac6933c7a5c3ecfdb62847866f46ac094';
+const _token = '';
 const _url = 'https://api.codenation.dev/v1/challenge/dev-ps/';
+
 
 module.exports = {
   /**
    * 
    * @param {*} callback 
    */
-  async getSentence(callback) {
-    const requestOptions = {
+  async generateData(callback) {
+    const resource = 'generate-data';
+    const options = {
       params: { token: _token }
     };
-    await axios.get(_url + 'generate-data', requestOptions)
+    await axios.get(_url + resource, options)
       .then(response => response.data)
       .then(result => callback(result))
       .catch(error => console.error(error));
@@ -25,12 +27,13 @@ module.exports = {
    * @param {*} data
    * @param {*} callback
    */
-  async postSentence(data, callback) {
-    const requestOptions = {
+  async submitSolution(data, callback) {
+    const resource = 'submit-solution';
+    const options = {
       params: { token: _token },
       headers: data.getHeaders()
     };
-    await axios.post(_url + 'submit-solution', data, requestOptions)
+    await axios.post(_url + resource, data, options)
       .then(response => response.data)
       .then(result => callback(result))
       .catch(error => console.error(error))

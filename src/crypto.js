@@ -1,39 +1,40 @@
 const crypto = require('crypto');
 
+
 /**
  * 
- * @param {*} sentence 
+ * @param {*} text 
  * @param {*} type 
  */
-const getHash = (sentence, type) => crypto
+const getHash = (text, type) => crypto
   .createHash(type)
-  .update(sentence)
+  .update(text)
   .digest('hex');
 
 module.exports = {
   /**
    * 
-   * @param {*} sentence 
+   * @param {*} text 
    */
-  getSha1(sentence) {
-    return getHash(sentence, 'sha1');
+  getSha1(text) {
+    return getHash(text, 'sha1');
   },
 
   /**
    * 
-   * @param {*} sentence 
+   * @param {*} text 
    * @param {*} number 
    */
-  decodeSentence(sentence, number) {
-    const letters = 26;
+  decodeSentence(text, number) {
+    const letters = 26; // Amount of the letters in the alphabet.
 
     number = number < 0 ? letters : number % letters;
     if (number == 0) {  // No changes.
-      output = sentence;
+      output = text;
     } else {            // Decode.
       var output = '';
-      for (var current = 0; current < sentence.length; current++) {
-        var code = sentence[current].charCodeAt();
+      for (var current = 0; current < text.length; current++) {
+        var code = text[current].charCodeAt();
 
         if (code >= 65 && code <= 090) {  // Capital letters.
           code += 32;
@@ -47,4 +48,4 @@ module.exports = {
     }
     return output;
   }
-}
+};

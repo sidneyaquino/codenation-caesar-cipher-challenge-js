@@ -2,9 +2,12 @@ const local = require('./local');
 const crypto = require('./crypto');
 const requests = require('./requests');
 
+var _response = null;
+
 // Step ONE - Make a request to the Codenation endpoint to get a sentence..
-requests.getSentence(getSentence_cb);
-console.log('Waiting Query..');
+requests.generateData(generateData_cb);
+console.log('Waiting Request..');
+
 return;
 
 
@@ -12,19 +15,34 @@ return;
  * 
  * @param {*} response 
  */
-function getSentence_cb(response) {
-  console.log('Response of the Query : ', response);
+function generateData_cb(response) {
+  _response = response;
+  console.log('Response of the Request: ', response);
 
-  // Step Two - Decode received sentence.
+  // Step TWO - Save data on the disk file.
+  local.writeFile(response, writeData_cb);
+  console.log('Saving File...'); 
+
+  return;
+}
+
+/**
+ * 
+ */
+function writeData_cb() {
+  const response = _response;
+  console.log('File Saved with Sucess!');
+
+  // Step THREE - Decode received sentence.
   response.decifrado = crypto.decodeSentence(response.cifrado, response.numero_casas);
   console.log('Sentence Decoded: ', response.decifrado);
 
-  // Step Three - Encode the Summary to SHA1 Hash.
+  // Step FOUR - Encode the Summary to SHA1 Hash.
   response.resumo_criptografico = crypto.getSha1(response.decifrado);
   console.log('Sentence Decoded (sha1): ', response.resumo_criptografico);
 
-  // Step Four - Update attributes on the disk file.
-  local.saveFile(JSON.stringify(response), saveFile_cb);
+  // Step FIVE - Update attributes on the disk file.
+  local.writeFile(response, writeSubmit_cb);
   console.log('Updating File...');
 
   return;
@@ -33,14 +51,14 @@ function getSentence_cb(response) {
 /**
  * 
  */
-function saveFile_cb() {
+function writeSubmit_cb() {
   console.log('File Updated with Sucess!');
 
-  // Step Five - Submit json of the challenge.  
+  // Step SIX - Submit json of the challenge.  
   const data = local.getData();
   console.log('File Loaded:', data._boundary);
 
-  requests.postSentence(data, postSentence_cb);
+  requests.submitSolution(data, submitSolution_cb);
   console.log('Challenge Submited!')
 
   return;
@@ -50,7 +68,7 @@ function saveFile_cb() {
  * 
  * @param {*} response 
  */
-function postSentence_cb(response) {
+function submitSolution_cb(response) {
   console.log('Result of the Submit: ', response)
   
   return;
